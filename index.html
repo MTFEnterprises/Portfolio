@@ -494,6 +494,15 @@ html,body{max-width:100%}body{overflow-x:clip}
 .brt b{font-weight:inherit}
 .bc{width:2px;height:1.05em;margin-left:4px;background:var(--gold-hi);animation:blink 1s steps(1) infinite}
 @media(max-width:380px){.bn small{display:inline}.brt{font-size:1.1rem}}
+
+@media(max-width:700px){
+  .pal{place-items:end center;padding:0}
+  .pbox{width:100%;max-width:none;border-radius:22px 22px 0 0;border-bottom:0;animation:sheet .4s cubic-bezier(.2,.8,.2,1)}
+  .pl{max-height:50vh;max-height:50svh;padding:8px 8px 14px}
+  .pf{display:none}
+}
+@keyframes sheet{from{transform:translateY(60px);opacity:0}}
+.vbg video{will-change:auto}
 </style>
 </head>
 <body>
@@ -1240,8 +1249,8 @@ html,body{max-width:100%}body{overflow-x:clip}
     if(sel>=shown.length)sel=0;
     pl.innerHTML=shown.length?shown.map(function(it,i){return '<li data-i="'+i+'" class="'+(i===sel?'on':'')+'"><span>'+it[1]+'</span><small>'+it[0]+'</small></li>'}).join(''):'<li><span>Nothing matches. Try "contact" or "github".</span></li>';
   }
-  function openP(){prev=document.activeElement;pal.classList.add('on');pq.value='';sel=0;render();pq.focus()}
-  function closeP(){pal.classList.remove('on');if(prev&&prev.focus)prev.focus()}
+  function openP(){prev=document.activeElement;pal.classList.add('on');pq.value='';sel=0;render();if(matchMedia('(pointer:fine)').matches)pq.focus();document.documentElement.style.overflow='hidden'}
+  function closeP(){pal.classList.remove('on');document.documentElement.style.overflow='';if(prev&&prev.focus)prev.focus()}
   function runSel(){var it=shown[sel];if(!it)return;closeP();setTimeout(it[2],60)}
   pl.addEventListener('click',function(e){var li=e.target.closest('li[data-i]');if(li){sel=+li.getAttribute('data-i');runSel()}});
   pl.addEventListener('pointermove',function(e){var li=e.target.closest('li[data-i]');if(li&&+li.getAttribute('data-i')!==sel){sel=+li.getAttribute('data-i');$$('#pl li').forEach(function(x,i){x.classList.toggle('on',i===sel)})}});
@@ -1265,7 +1274,19 @@ html,body{max-width:100%}body{overflow-x:clip}
 (function(){
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   var box=document.getElementById('vbg'), v=box.querySelector('video'), srcs=v.querySelectorAll('source');
-  if(matchMedia('(max-width:820px)').matches){Array.prototype.forEach.call(srcs,function(x){x.remove()});v.removeAttribute('src');v.load();return}
+  if(matchMedia('(max-width:820px)').matches){
+    var moving=false,tm=0,lastY=pageYOffset;
+    v.loop=true;v.muted=true;v.setAttribute('playsinline','');
+    v.addEventListener('loadeddata',function(){box.classList.add('on');var q=v.play();if(q&&q.catch)q.catch(function(){});setTimeout(function(){if(!moving)v.pause()},3500)});
+    srcs[srcs.length-1].addEventListener('error',function(){box.classList.remove('on')});
+    addEventListener('scroll',function(){
+      var y=pageYOffset,dy=Math.abs(y-lastY);lastY=y;if(dy<1)return;
+      moving=true;v.playbackRate=Math.min(3,1+dy*.06);
+      var q=v.play();if(q&&q.catch)q.catch(function(){});
+      clearTimeout(tm);tm=setTimeout(function(){moving=false;v.pause()},260);
+    },{passive:true});
+    return;
+  }
   var dur=0, cur=0, ready=false;
   v.muted=true;
   v.addEventListener('loadedmetadata',function(){dur=v.duration||0});
