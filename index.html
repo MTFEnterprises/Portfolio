@@ -476,6 +476,24 @@ html,body{max-width:100%}body{overflow-x:clip}
 
 .mm-b .btn-line{background:transparent;color:var(--text);border:1px solid var(--line)}
 @media(max-width:600px){.btn{white-space:nowrap}.hero-btns .btn{padding-left:14px;padding-right:14px}}
+
+/* ===== brand + menu refinement ===== */
+.brand{gap:13px;letter-spacing:.2px;line-height:1.05}
+.mono{width:42px;height:42px;font-size:.78rem;letter-spacing:.08em;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,var(--gold-hi),var(--gold) 55%,var(--gold-hi)) border-box;box-shadow:0 0 18px -6px var(--gold);transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.brand:hover .mono{transform:rotate(360deg);box-shadow:0 0 24px -4px var(--gold)}
+.bn{display:flex;flex-direction:column;gap:4px;font-size:1.28rem}
+.bn small{font-family:var(--sans);font-size:.58rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-hi);opacity:.85}
+.mmenu{padding-top:88px}
+.mm-in{width:100%;max-width:520px;margin:0 auto}
+.mm-in>a:not(.btn){font-size:clamp(1.45rem,5.2vw,1.85rem);padding:13px 0}
+.mm-b{margin-top:26px}
+.mm-b .btn{flex:1 1 140px;min-height:46px;font-size:.92rem}
+@media(max-width:380px){.bn small{display:none}.bn{font-size:1.2rem}}
+
+.brt{display:flex;align-items:center;min-height:1.35em;white-space:nowrap;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.22rem;color:var(--text)}
+.brt b{font-weight:inherit}
+.bc{width:2px;height:1.05em;margin-left:4px;background:var(--gold-hi);animation:blink 1s steps(1) infinite}
+@media(max-width:380px){.bn small{display:inline}.brt{font-size:1.1rem}}
 </style>
 </head>
 <body>
@@ -488,7 +506,7 @@ html,body{max-width:100%}body{overflow-x:clip}
 
 <nav class="nav" aria-label="Main">
   <div class="wrap nav-in">
-    <a href="#top" class="brand" aria-label="Muhammad Taha Faisal, home"><span class="mono">MTF</span>Taha Faisal</a>
+    <a href="#top" class="brand" aria-label="Muhammad Taha Faisal, home"><span class="mono">MTF</span><span class="bn"><span class="brt" aria-hidden="true"><b id="bt">Assalam o Alaikum</b><i class="bc"></i></span><small>Faisalabad, Pakistan</small></span></a>
     <div class="nav-links">
       <a href="#about">About</a><a href="#pos">MTF POS</a><a href="#projects">Projects</a><a href="#journey">Journey</a><a href="#contact">Contact</a>
     </div>
@@ -1307,6 +1325,19 @@ html,body{max-width:100%}body{overflow-x:clip}
   document.getElementById('mm-q').addEventListener('click',function(){mm(false);setTimeout(function(){document.getElementById('kbtn').click()},250)});
   addEventListener('keydown',function(e){if(e.key==='Escape'&&m.classList.contains('on'))mm(false)});
   addEventListener('resize',function(){if(innerWidth>980&&m.classList.contains('on'))mm(false)});
+})();
+</script>
+<script>
+(function(){
+  var el=document.getElementById('bt');if(!el)return;
+  var w=['Assalam o Alaikum','MTF Enterprises','Building MTF POS','Open to work','Let\u2019s build'],i=0,c=0,d=false;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  (function t(){
+    var s=w[i];c+=d?-1:1;el.textContent=s.slice(0,c);
+    var n=d?35:75;
+    if(!d&&c===s.length){d=true;n=1900}else if(d&&c===0){d=false;i=(i+1)%w.length;n=300}
+    setTimeout(t,n);
+  })();
 })();
 </script>
 </body>
